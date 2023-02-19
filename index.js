@@ -9,7 +9,6 @@ require('dotenv').config();
 const issueModel = require("./db/issueModel.js");
 const apiRouter = require("./routes/api.js");
 
-const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
 const runner            = require('./test-runner');
 

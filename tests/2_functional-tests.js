@@ -1,7 +1,8 @@
 const chaiHttp = require('chai-http');
 const chai = require('chai');
 const assert = chai.assert;
-const server = require('../index.js');
+const server = require('../index.js');          //use this locally
+// const server = 'https://issue-tracker.isimeri.repl.co';      //use this on repl
 
 let delId;
 
@@ -63,7 +64,7 @@ suite('Functional Tests', function() {
                 assigned_to: "george the issue demolisher",
                 status_text: "new"})
             .end(function (err, res) {
-                assert.equal(res.body.err, "mandatory fields are mandatory");
+                assert.equal(res.body.err, "required field(s) missing");
                 done();
             });
         });
@@ -117,7 +118,7 @@ suite('Functional Tests', function() {
             });
         });
     });
-    /*suite("PUT requests", function(){
+    suite("PUT requests", function(){
         test("Update one field on an issue: PUT request to /api/issues/{project}", function(done){
             chai.request(server)
             .put("/api/issues/apitest")
@@ -153,7 +154,7 @@ suite('Functional Tests', function() {
                 assigned_to: "lady gaga"
             })
             .end(function(err, res){
-                assert.equal(res.body.msg, "missing issue id");
+                assert.equal(res.body.msg, "missing _id");
                 done();
             });
         });
@@ -162,7 +163,7 @@ suite('Functional Tests', function() {
             .put("/api/issues/apitest")
             .send({_id: "63f0e91e2cc7073368c7f09a"})
             .end((err, res) => {
-                assert.equal(res.body.msg, "there was nothing to update");
+                assert.equal(res.body.msg, "no update field(s) sent");
                 done();
             });
         });
@@ -178,7 +179,7 @@ suite('Functional Tests', function() {
                 done();
             });
         });
-    });*/
+    });
     suite("DELETE requests", function(){
         test("Delete an issue: DELETE request to /api/issues/{project}", done => {
             chai.request(server)
@@ -190,7 +191,7 @@ suite('Functional Tests', function() {
                 done();
             });
         });
-        test("Delete an issue with an invalid _id: DELETE request to /api/issues/{project}", done => {  //deocamdata merge sa intorc erori la un id invalid DACA idul respecta cerintele mongo, i.e. 24 de caractere hex. pt un id de genul "asdasfasdasdasdlkjhg", mongo intoarce eroare de conversie la objectID
+        test("Delete an issue with an invalid _id: DELETE request to /api/issues/{project}", done => {
             chai.request(server)
             .delete("/api/issues/apitest")
             .send({_id: "abcdefghij69xy"})
@@ -200,7 +201,7 @@ suite('Functional Tests', function() {
                 done();
             });
         });
-        test("Delete an issue with missing _id: DELETE request to /api/issues/{project}", done => {  //deocamdata merge sa intorc erori la un id invalid DACA idul respecta cerintele mongo, i.e. 24 de caractere hex. pt un id de genul "asdasfasdasdasdlkjhg", mongo intoarce eroare de conversie la objectID
+        test("Delete an issue with missing _id: DELETE request to /api/issues/{project}", done => {  
             chai.request(server)
             .delete("/api/issues/apitest")
             .send({_id: ""})
@@ -212,31 +213,3 @@ suite('Functional Tests', function() {
         });
     });
 })
-
-
-
-// project: proj,
-// issue_title: req.body.issue_title,
-// issue_text: req.body.issue_text,
-// created_by: req.body.created_by,
-// created_on: Date.now().toString(),
-// updated_on: Date.now().toString(),
-// assigned_to: req.body.assigned_to,
-// open: true,
-// status_text: req.body.status_text
-
-// Create an issue with every field: POST request to /api/issues/{project}
-// Create an issue with only required fields: POST request to /api/issues/{project}
-// Create an issue with missing required fields: POST request to /api/issues/{project}
-// View issues on a project: GET request to /api/issues/{project}
-// View issues on a project with one filter: GET request to /api/issues/{project}
-// View issues on a project with multiple filters: GET request to /api/issues/{project}
-// Update one field on an issue: PUT request to /api/issues/{project}
-// Update multiple fields on an issue: PUT request to /api/issues/{project}
-// Update an issue with missing _id: PUT request to /api/issues/{project}
-// Update an issue with no fields to update: PUT request to /api/issues/{project}
-// Update an issue with an invalid _id: PUT request to /api/issues/{project}
-// Delete an issue: DELETE request to /api/issues/{project}
-// Delete an issue with an invalid _id: DELETE request to /api/issues/{project}
-// Delete an issue with missing _id: DELETE request to /api/issues/{project}
-

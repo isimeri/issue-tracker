@@ -1,35 +1,14 @@
 'use strict';
 const express = require('express');
 const router = express.Router();
-
 const issueModel = require('../db/issueModel.js');
-
 const {Types: {ObjectId}} = require('mongoose');
 
-// router.get('/:project', async (req, res) => {
-//   const proj = req.params.project;
-//   let options = {project: proj};
-//   if(req.query.created_by){
-//     options["created_by"] = req.query.created_by;
-//   }
-//   if(req.query.assigned_to){
-//     options["assigned_to"] = req.query.assigned_to;
-//   }
-//   if(req.query.open){
-//     options["open"] = req.query.open;
-//   }
-//   if(req.query.status_text){
-//     options["status_text"] = req.query.status_text;
-//   }
-//   const issuesArr = await issueModel.find(options).sort({created_at: 'desc'});
-//   res.render("issue", {project: proj, issues: issuesArr});
-// });
 router.get('/:project', async (req, res) => {
   const proj = req.params.project;
   const options = {project: proj, ...req.query};
   const issuesArr = await issueModel.find(options).select({project: 0}).sort({created_at: 'desc'});
-  // console.log(options);
-  // console.log(issuesArr[0]);
+
   res.json(issuesArr);
 });
 
@@ -37,7 +16,7 @@ router.post('/:project', (req, res) => {
   const proj = req.params.project;
 
   if (!req.body.issue_title || !req.body.issue_text || !req.body.created_by) {
-    return res.json({ err: "mandatory fields are mandatory"});
+    return res.json({ error: 'required field(s) missing' });
   }
 
   const newIssue = new issueModel({
@@ -74,23 +53,28 @@ router.put('/:project', async (req, res) => {
   } else if(req.query._id){
     issueId = req.query._id;
   } else {
-    return res.json({msg: "missing issue id"})
+    return res.json({msg: "missing _id"})
   }
 
   if(Object.keys(reqbody).length === 0){
-    return res.json({msg: 'there was nothing to update'});
+    return res.json({ error: 'no update field(s) sent', '_id': _id });
   }
   
-  try{
-    doc = await issueModel.findByIdAndUpdate(issueId, reqbody, {new: true});
-  } catch(e){
-    console.error(e);
+  if(ObjectId.isValid(issueId)){
+
+    try{
+      doc = await issueModel.findByIdAndUpdate(issueId, reqbody, {new: true});
+    } catch(e){
+      console.error(e);
+    }
+    if(!doc){
+      return res.json({msg: "issue not found"});
+    }
+  } else {
+    res.json({ error: 'could not update', '_id': _id });
   }
 
-  if(!doc){
-    return res.json({msg: "issue not found"});
-  }
-  res.json({ msg: `issue ${issueId} updated successfully`, doc});
+  res.json({ result: 'successfully updated', '_id': _id });
 });
 
 router.delete('/:project', async (req, res) => {
@@ -108,13 +92,11 @@ router.delete('/:project', async (req, res) => {
   if(ObjectId.isValid(issueId)){
 
     doc = await issueModel.findOne({_id: issueId});
-    // console.log("findone in del ", doc);
+
     if(!doc){
-      console.log("if 1");
       return res.json({error: "could not delete", "_id": issueId});
     }
   } else {
-    console.log("if 2");
     return res.json({error: "could not delete", "_id": issueId});
   }
   await doc.delete();
