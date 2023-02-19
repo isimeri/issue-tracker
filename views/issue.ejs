@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Issue Tracker - Project Page</title>
+    <link rel="icon" type="image/png" href="https://cdn.freecodecamp.org/universal/favicons/favicon-16x16.png" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/public/issue.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.2/axios.min.js" integrity="sha512-NCiXRSV460cHD9ClGDrTbTaw0muWUBf/zB/yLzJavRsPNUl9ODkUVmUHsZtKu17XknhsGlmyVoJxLg/ZQQEeGA==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1 id='projectTitle'>Project <%= project %></h1>
+    </header>
+    <main>
+      <div id='submitNewIssue'>
+        <h3>Submit a new issue:</h3>
+        <form id="newIssue" method="post" action="/api/issues/<%=project%>">
+          <input type="text" name="issue_title" placeholder="*Title" required=''>
+          <textarea type="text" name="issue_text" placeholder="*Text" required=''></textarea>
+          <input type="text" name="created_by" placeholder="*Created by" required=''>
+          <input type="text" name="assigned_to" placeholder="(opt)Assigned to">
+          <input type="text" name="status_text" placeholder="(opt)Status text">
+          <button type="submit">Submit Issue</button>
+        </form>
+      </div>
+      
+      <div id='issueDisplay'>
+        <% if(issues) { %>
+        <% issues.forEach(iss => { %>
+          <% let openString; %>
+          <% if(iss.open === true) openString = 'open'; else openString = "closed";  %>
+            <div class="issue <%= openString %>">
+                <p class="id"><b>ID: </b><%= iss._id %></p>
+                <h3><%= iss.issue_title %> - <span class="open-closed"><%= openString %></span></h3>
+                <p><%= iss.issue_text %></p>
+                <p><b>Status: </b><%= iss.status_text %></p>
+                <p class="id"><b>Created by: </b><%= iss.created_by %></p>
+                <p><b>Assigned to: </b><%= iss.assigned_to %> </p>
+                <p class="id"><b>Created on: </b><%= iss.created_on %></p>
+                <p><b>Last updated: </b><%= iss.updated_on %> </p>
+                <br><a href="#" class="closeIssue" id="<%= iss._id %>">close?</a> <a href="#" class="deleteIssue" id="<%= iss._id %>">delete?</a>
+            </div>
+        <% }); }%>
+      </div>
+      <div class="msg-display"></div>
+    </main>
+
+    <script>
+      // let url = "/api/issues/"+project;
+      const issueDisplay = document.getElementById("issueDisplay");
+      const msgDisplay = document.querySelector(".msg-display");
+      const createIssueForm = document.getElementById("newIssue");
+      createIssueForm.addEventListener("submit", e => {
+        e.preventDefault();
+        const url = `/api/issues/<%= project %>`;
+        const formData = new FormData(createIssueForm);
+        const data = {};
+
+        formData.forEach((value, key) => {
+          data[key] = value;
+        });
+
+        const json = JSON.stringify(data);
+
+        fetch(url, {
+          method: 'post',
+          headers: {"Content-Type": "application/json"},
+          body: json
+        }).then(res => res.json())
+        .then(data => {
+          msgDisplay.textContent = `New issue created successfully.`;
+        }).catch(err => console.error(err));
+      });
+      issueDisplay.addEventListener('click', (e) => {
+          // let url = "/api/issues/"+project;
+          // $.ajax({
+          //   type: "PUT",
+          //   url: url,
+          //   data: {_id: $(this).attr('id'), open: false},
+          //   success: function(data) { alert(data); window.location.reload(true); }
+          // });
+        e.preventDefault();
+        if(e.target.classList.contains('closeIssue')){
+          const url = `/api/issues/<%= project %>?_id=${ e.target.id }`;
+          fetch(url, {
+            method: "put",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({open: false})
+          }).then(res => res.json())
+          .then(data => {
+            msgDisplay.textContent = data.msg;
+            const issueBody = e.target.closest('.issue');
+            const openStringSpan = issueBody.querySelector('.open-closed');
+            const openString = data.open === true? "open" : "closed";
+            
+            openStringSpan.textContent = openString;
+            issueBody.classList.add('closed');
+          })
+          .catch(err => console.error(err));
+        }
+        if(e.target.classList.contains('deleteIssue')){
+          const url = `/api/issues/<%= project %>?_id=${e.target.id}`;
+          // console.log("in event listener skeske");
+          fetch(url, {method: 'delete'}).then(res => res.json())
+          .then(data => {
+            const issueBody = e.target.closest('.issue');
+            issueDisplay.removeChild(issueBody);
+            msgDisplay.textContent = data.msg;
+          }).catch(err => console.error(err));
+        }
+      });
+        
+    </script>
+  </body>
+</html>

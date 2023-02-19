@@ -1,0 +1,111 @@
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+:root{
+  --darkblue: #264653;
+  --turq: #2a9d8f;
+  --yellow: #e9c46a;
+  --orange: #f4a261;
+  --red: #e76f51;
+}
+
+body {
+  padding: 5vh 5%;
+  background-color: var(--yellow);
+  color: var(--darkblue);
+  font-family: "Poppins", "Raleway", sans-serif;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(12, 8vh);
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+}
+header{
+  grid-column: 1/6;
+  grid-row: 0/1;
+}
+code{
+  font-family: "Source Code Pro", monospace;
+  font-size: 14px;
+}
+section{
+  /* padding: 0 2rem; */
+  display: flex;
+  flex-direction: column;
+}
+#guide-section{
+  border-bottom: 2px solid var(--red);
+  grid-column: 1/6;
+  padding-bottom: 2rem;
+  padding-right: 3rem;
+  /* grid-column-end: 6; */
+}
+#testui-section{
+  align-items: center;
+  grid-row-start: 1;
+  grid-column: 6/13;
+  border-left: 2px solid var(--red);
+  padding-left: 3rem;
+}
+.forms-container{
+  /* justify-content: space-between; */
+  align-items: stretch;
+  width: 100%;
+}
+.form-wrapper{
+  padding: 1rem 2rem;
+  
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* .forms-container .form-wrapper:last-child{
+  border-right: none;
+} */
+.form-wrapper form{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 10px;
+}
+.form-wrapper form > input, textarea{
+  width: 100%;
+  padding: 4px 8px;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+}
+.form-wrapper > h3{
+  margin-bottom: 10px;
+}
+
+.issue {
+  margin: 20px;
+  padding: 5px;
+  width: 60%;
+  border: 2px solid black;
+}
+
+.closed {
+  background-color: rgb(148, 148, 148);
+}
+
+.id {
+  font-size: 10.5px;
+}
+button{
+  font-family: "Poppins", "Raleway", sans-serif;
+  max-width: 200px;
+  padding: 0.3rem 1rem;
+  background-color: #2a9d8f;
+  color: #e9c46a;
+  border: none;
+  outline: none;
+  border-radius: 0.5rem;
+  font-size: 1.2rem;
+}
