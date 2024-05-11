@@ -1,0 +1,63 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+:root{
+    --darkblue: #264653;
+    --turq: #2a9d8f;
+    --yellow: #e9c46a;
+    --code: hsl(43, 44%, 56%);
+    --orange: #f4a261;
+    --red: #e76f51;
+}
+/* ======================body============================ */
+body{
+    padding: 5vh 2%;
+    background-color: var(--yellow);
+    color: var(--darkblue);
+    font-family: "Poppins", "Raleway", sans-serif;
+    min-height: 100vh;
+}
+/* ======================button========================== */
+button{
+    font-family: "Poppins", "Raleway", sans-serif;
+    max-width: 200px;
+    padding: 0.3rem 1rem;
+    background-color: hsl(173, 58%, 39%);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1.2rem;
+    scale: 1;
+    transition: all 0.2s ease-in-out;
+}
+button:hover{
+    background-color: hsl(173, 58%, 45%);
+    cursor: pointer;
+    scale: 1.05;
+}
+    button:active{
+    scale: 0.95;
+}
+/* ======================input============================= */
+form > input, textarea{
+    width: 100%;
+    max-width: 100%;
+    padding: 4px 8px;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    font-family: "Poppins", "Raleway", sans-serif;
+    font-size: 0.9rem;
+}
+/* ===========================code=========================== */
+code:not(pre > code), pre{
+    font-family: "Source Code Pro", monospace;
+    font-size: 14px;
+    background-color: var(--code);
+    padding: 0.2rem;
+  }
+  code{
+    display: inline-block;
+  }

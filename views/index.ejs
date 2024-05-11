@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/public/general.css">
     <link rel="stylesheet" href="/public/style.css">
   </head>
   <body>
@@ -14,35 +15,43 @@
         Issue Tracker
       </h1>
     </header>
+    <main>
     <section id="guide-section">
-      <h3>Example GET usage</h3>
-      <code>/api/issues/{project}</code><br>
-      <code>/api/issues/{project}?open=true&amp;assigned_to=Joe</code><br>
-      <h3>Example return</h3>
-      <pre>
-        <code>[
-        { 
-          "_id": "5871dda29faedc3491ff93bb",
-          "issue_title": "Fix error in posting data",
-          "issue_text": "When we post data it has an error.",
-          "created_on": "2017-01-08T06:35:14.240Z",
-          "updated_on": "2017-01-08T06:35:14.240Z",
-          "created_by": "Joe",
-          "assigned_to": "Joe",
-          "open": true,
-          "status_text": "In QA"
-        },
-        ...
-      ]
-      </code>
-    </pre>
-    <h3>Examples</h3>
-    <p>Go to <a href='/api/issues/apitest/'><code>/api/issues/apitest/</code></a>  project</p>
+      <div class="guide">
+        <h3>Example GET usage</h3>
+        <p><code>/api/issues/{project}</code></p>
+        <p><code>/api/issues/{project}?open=true&amp;assigned_to=Joe</code></p>
+      </div>
+      <div class="guide">
+        <h3>Example return</h3>
+        <pre><code>[
+  { 
+    "_id": "5871dda29faedc3491ff93bb",
+    "issue_title": "Fix error in posting data",
+    "issue_text": "When we post data it has an error.",
+    "created_on": "2017-01-08T06:35:14.240Z",
+    "updated_on": "2017-01-08T06:35:14.240Z",
+    "created_by": "Joe",
+    "assigned_to": "Joe",
+    "open": true,
+    "status_text": "In QA"
+  },
+  ...
+]</code></pre>
+      </div>
+      <div class="guide">
+        <h3>Examples</h3>
+        <p>Go to <a href='/api/issues/apitest/'><code>/api/issues/apitest/</code></a> for a JSON format view of all the issues regarding the <span class="bold">apitest</span> project.</p>
+        <p>Go to <a href='/apitest/'><code>/apitest/</code></a> for a frontend view of all the issues regarding the <span class="bold">apitest</span> project.</p>
+        <p>Go to <code>/:project-name/</code></a> for a frontend view of all the issues regarding that particular project.</p>
+      </div>
+      <div class="feedback-wrapper">
+        <h3>Feedback</h3>
+        <pre><code id='jsonResult'></code></pre>
+      </div>
     </section>
-    <section id='testui-section' style='margin-left: 50px;'>
-      
-      <h2 style="text-align: left">API Tests</h2>
-
+    <section id='testui-section'>
+      <h2>API Tests</h2>
       <div class="forms-container">
         <div class="form-wrapper">
           <h3>Submit issue on <i>apitest</i></h3>
@@ -56,7 +65,7 @@
           </form>
         </div>
         <div class="form-wrapper">
-          <h3>Update issue on <i>apitest</i> (Change any or all to update issue on the _id supplied)</h3>
+          <h3>Update issue by _id</h3>
           <form id="testForm2" class="put-form border">
             <input type="text" name="_id" placeholder="*_id" required=''>
             <input type="text" name="issue_title" placeholder="(opt)Title">
@@ -69,23 +78,19 @@
           </form>
         </div>
         <div class="form-wrapper">
-          <h3>Delete issue on <i>apitest</i></h3>
+          <h3>Delete issue by _id</h3>
           <form id="testForm3" class="delete-form border">
             <input type="text" name="_id" placeholder="_id" required=''>
             <button type="submit">Delete Issue</button>
           </form>
         </div>
       </div>
-      <code id='jsonResult'></code>
     </section>
+    </main>
     <script>
       const postForm = document.querySelector('.post-form');
       const putForm = document.querySelector('.put-form');
-      // const putFormId = document.querySelector('.put-form input[name="_id"]').value;
-
       const deleteForm = document.querySelector('.delete-form');
-      // const deleteFormId = document.querySelector('.delete-form input[name="_id"]').value;
-
       const responseContainer = document.querySelector("#jsonResult");
 
       postForm.addEventListener("submit", e => {
@@ -103,13 +108,14 @@
           body: json
         }).then(res => res.json())
         .then(data => {
-          responseContainer.textContent = JSON.stringify(data);
+          let resString = JSON.stringify(data).replace(/\,(?=\")/g, `,\n  `);
+          resString = `{\n  ` + resString.slice(1, resString.length-1) + `\n}`;
+          responseContainer.textContent = resString;
         }).catch(e => console.error(e));
       });
 
       putForm.addEventListener('submit', (event) => {
         event.preventDefault();
-        const putFormId = document.querySelector('.put-form input[name="_id"]').value;
         const formData = new FormData(putForm);
         const data = {};
 
@@ -125,9 +131,7 @@
           body: json
         }).then(res => res.json())
         .then(data => {
-          // console.log(`Put request on id ${putFormId} successful `, data);  ----se pare ca aici putFormId nu este accesibil
-          // responseContainer.textContent = `Issue ${putFormId} updated successfully.`;
-          responseContainer.textContent = data.msg;
+            responseContainer.textContent = data.msg;
         })
         .catch(e => console.error(e));
       });
@@ -136,52 +140,15 @@
         e.preventDefault();
         const deleteFormId = document.querySelector('.delete-form input[name="_id"]').value;
         const url = `/api/issues/apitest?_id=${deleteFormId}`;
-        // console.log("del id in event listener ", deleteFormId);
+
         fetch(url, {
           method: 'delete'
         }).then(res => res.json())
         .then(data => {
-          // console.log(`Delete request on id ${deleteFormId} successful `, data);
-          // responseContainer.textContent = `Issue ${deleteFormId} deleted.`;
           responseContainer.textContent = data.msg;
         }).catch(e => console.error(e));
       });
 
-      // $(function() {
-      //   $('#testForm').submit(function(e) {
-      //     $.ajax({
-      //       url: '/api/issues/apitest',
-      //       type: 'post',
-      //       data: $('#testForm').serialize(),
-      //       success: function(data) {
-      //         $('#jsonResult').text(JSON.stringify(data));
-      //       }
-      //     });
-      //     e.preventDefault();
-      //   });
-      //   $('#testForm2').submit(function(e) {
-      //     $.ajax({
-      //       url: '/api/issues/apitest',
-      //       type: 'put',
-      //       data: $('#testForm2').serialize(),
-      //       success: function(data) {
-      //         $('#jsonResult').text(JSON.stringify(data));
-      //       }
-      //     });
-      //     e.preventDefault();
-      //   });
-      //   $('#testForm3').submit(function(e) {
-      //     $.ajax({
-      //       url: '/api/issues/apitest',
-      //       type: 'delete',
-      //       data: $('#testForm3').serialize(),
-      //       success: function(data) {
-      //         $('#jsonResult').text(JSON.stringify(data));
-      //       }
-      //     });
-      //     e.preventDefault();
-      //   });
-      // });
-   </script>
+      </script>
   </body>
 </html>

@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/public/general.css">
     <link rel="stylesheet" href="/public/issue.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.2/axios.min.js" integrity="sha512-NCiXRSV460cHD9ClGDrTbTaw0muWUBf/zB/yLzJavRsPNUl9ODkUVmUHsZtKu17XknhsGlmyVoJxLg/ZQQEeGA==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
   </head>
@@ -25,6 +26,7 @@
           <button type="submit">Submit Issue</button>
         </form>
       </div>
+      <div class="msg-display"></div>
       
       <div id='issueDisplay'>
         <% if(issues) { %>
@@ -39,19 +41,22 @@
                 <p class="id"><b>Created by: </b><%= iss.created_by %></p>
                 <p><b>Assigned to: </b><%= iss.assigned_to %> </p>
                 <p class="id"><b>Created on: </b><%= iss.created_on %></p>
-                <p><b>Last updated: </b><%= iss.updated_on %> </p>
-                <br><a href="#" class="closeIssue" id="<%= iss._id %>">close?</a> <a href="#" class="deleteIssue" id="<%= iss._id %>">delete?</a>
+                <p><b>Last updated: </b><%= iss.updated_on %> </p><br>
+                <a href="#" class="deleteIssue" id="<%= iss._id %>">delete?</a>
+                <% if(iss.open === true) { %>
+                  <a href="#" class="closeIssue" id="<%= iss._id %>">close?</a>
+                <% } %>
             </div>
         <% }); }%>
       </div>
-      <div class="msg-display"></div>
     </main>
 
     <script>
-      // let url = "/api/issues/"+project;
       const issueDisplay = document.getElementById("issueDisplay");
       const msgDisplay = document.querySelector(".msg-display");
       const createIssueForm = document.getElementById("newIssue");
+
+      //create new issue
       createIssueForm.addEventListener("submit", e => {
         e.preventDefault();
         const url = `/api/issues/<%= project %>`;
@@ -70,20 +75,23 @@
           body: json
         }).then(res => res.json())
         .then(data => {
+          //aici am acces la documentul creat; vine din backend si nu fac nimic cu el;
+          //de bagat dinamic in front; la moment trebuie sa faci refresh pt update de front
           msgDisplay.textContent = `New issue created successfully.`;
         }).catch(err => console.error(err));
       });
+      //close and delete issue
       issueDisplay.addEventListener('click', (e) => {
-          // let url = "/api/issues/"+project;
-          // $.ajax({
-          //   type: "PUT",
-          //   url: url,
-          //   data: {_id: $(this).attr('id'), open: false},
-          //   success: function(data) { alert(data); window.location.reload(true); }
-          // });
+
         e.preventDefault();
         if(e.target.classList.contains('closeIssue')){
+          const issueElem = e.target.closest(".issue");
+          if(issueElem.classList.contains("closed")){
+            return;
+          }
+          
           const url = `/api/issues/<%= project %>?_id=${ e.target.id }`;
+          console.log(url);
           fetch(url, {
             method: "put",
             headers: {"Content-Type": "application/json"},
@@ -92,8 +100,11 @@
           .then(data => {
             msgDisplay.textContent = data.msg;
             const issueBody = e.target.closest('.issue');
+            const closeBtn = issueBody.querySelector(".closeIssue");
             const openStringSpan = issueBody.querySelector('.open-closed');
+
             const openString = data.open === true? "open" : "closed";
+            issueBody.removeChild(closeBtn);
             
             openStringSpan.textContent = openString;
             issueBody.classList.add('closed');
@@ -102,7 +113,6 @@
         }
         if(e.target.classList.contains('deleteIssue')){
           const url = `/api/issues/<%= project %>?_id=${e.target.id}`;
-          // console.log("in event listener skeske");
           fetch(url, {method: 'delete'}).then(res => res.json())
           .then(data => {
             const issueBody = e.target.closest('.issue');

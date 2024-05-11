@@ -1,87 +1,69 @@
-* {
-  margin: 0px;
-  padding: 0px;
-  box-sizing: border-box;
-}
 :root{
   --darkblue: #264653;
   --turq: #2a9d8f;
   --yellow: #e9c46a;
+  --code: hsl(43, 44%, 56%);
   --orange: #f4a261;
   --red: #e76f51;
 }
+h1{
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+main{
+  display: flex;
+  gap: 2rem;
+}
 
-body {
-  padding: 5vh 5%;
-  background-color: var(--yellow);
-  color: var(--darkblue);
-  font-family: "Poppins", "Raleway", sans-serif;
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: repeat(12, 8vh);
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-}
-header{
-  grid-column: 1/6;
-  grid-row: 0/1;
-}
-code{
-  font-family: "Source Code Pro", monospace;
-  font-size: 14px;
-}
-section{
-  /* padding: 0 2rem; */
+#guide-section{
   display: flex;
   flex-direction: column;
+  padding: 2rem 0;
+  max-width: 800px;
 }
-#guide-section{
-  border-bottom: 2px solid var(--red);
-  grid-column: 1/6;
-  padding-bottom: 2rem;
-  padding-right: 3rem;
-  /* grid-column-end: 6; */
+.guide{
+  margin-bottom: 1.5rem;
+}
+h3{
+  margin-bottom: 0.5rem;
+}
+.guide > p{
+  margin-bottom: 0.2rem;
+}
+.feedback-wrapper{
+  padding: 1rem 0;
+}
+#jsonResult{
+  font-weight: bold;
 }
 #testui-section{
-  align-items: center;
-  grid-row-start: 1;
-  grid-column: 6/13;
-  border-left: 2px solid var(--red);
-  padding-left: 3rem;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  background-color: var(--orange);
+  align-self: flex-start;
+  flex-grow: 1;
+  /* max-width: 600px; */
+}
+#testui-section > h2{
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
 }
 .forms-container{
-  /* justify-content: space-between; */
-  align-items: stretch;
-  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem
 }
 .form-wrapper{
-  padding: 1rem 2rem;
-  
-  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
-/* .forms-container .form-wrapper:last-child{
-  border-right: none;
-} */
+
 .form-wrapper form{
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   gap: 10px;
-}
-.form-wrapper form > input, textarea{
-  width: 100%;
-  padding: 4px 8px;
-  border: none;
-  outline: none;
-  border-radius: 5px;
-}
-.form-wrapper > h3{
-  margin-bottom: 10px;
 }
 
 .issue {
@@ -98,14 +80,16 @@ section{
 .id {
   font-size: 10.5px;
 }
-button{
-  font-family: "Poppins", "Raleway", sans-serif;
-  max-width: 200px;
-  padding: 0.3rem 1rem;
-  background-color: #2a9d8f;
-  color: #e9c46a;
-  border: none;
-  outline: none;
-  border-radius: 0.5rem;
-  font-size: 1.2rem;
+
+.bold{
+  font-weight: 700;
+}
+
+@media screen and (max-width: 1000px){
+  main{
+    flex-direction: column;
+  }
+  #testui-section{
+    align-self: stretch;
+  }
 }

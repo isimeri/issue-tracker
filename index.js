@@ -1,9 +1,7 @@
 'use strict';
 
-const express     = require('express');
-const bodyParser  = require('body-parser');
-const expect      = require('chai').expect;
-const cors        = require('cors');
+const express = require('express');
+const cors = require('cors');
 const connectDB = require('./db/connect.js');
 require('dotenv').config();
 const issueModel = require("./db/issueModel.js");
