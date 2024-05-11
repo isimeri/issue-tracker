@@ -1,10 +1,11 @@
-# Issue Tracker -- [[live]]()
+# Issue Tracker -- [[live]](https://issue-tracker-k9t3.onrender.com/)
 
 An issue tracking API with a simple frontend interface for making the interaction with the backend easier. On the `/` page there are forms for doing `POST`, `PUT` and `DELETE` requests. The `GET` requests happen automatically when visiting a `/:project-name` page, whether `project-name` exists or not. There is a project that is there by default,  namely `apitest`. All the data sent through the `POST` form on the **index** page gets associated with the `apitest` project.
 ___
-Click [here]() to check out the live app.
+Click [here](https://issue-tracker-k9t3.onrender.com/) to check out the live app.
 ___
-![issue tracker index page screenshot](https://i.imgur.com/ot8OJae.png)
+
+![index page screenshot](https://i.imgur.com/CYHlWBz.png)
 
 ## Index page
 There are 3 forms on the index page:  
@@ -18,7 +19,7 @@ Not filling out mandatory fields, providing an issue `_id` that is invalid or do
 All the issues associated with a certain project can be viewed in a JSON format by accessing `/api/issues/:project-name`. Furthermore, query parameters are supported. For example, accessing `/api/issues/:project-name?created_by=spongebob` will display all the issues on `project-name` created by **spongebob**. The query parameters are also chainable, e.g. accessing `/api/issues/:project-name?open=false&assigned_to=harambe` will display all the issues under `project-name` that are closed and were assigned to **harambe**.
 ___
 
-![apitest project page screenshot](https://i.imgur.com/adej7r9.png)
+![project page screenshot](https://i.imgur.com/sVTe9qp.png)
 
 ## Project page
 This page can be accessed by going to `/:project-name`. This page displays all the issues belonging to the project the page is about on a simple frontend.
